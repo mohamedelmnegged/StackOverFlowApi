@@ -14,21 +14,21 @@ namespace StackOverFlowApi.Controllers
     [Route("Comments")]
     public class CommentApi : Controller
     {
-        private readonly CommentManager commentManager;
+        private readonly UnitOfWork unitOfWork;
 
-        public CommentApi(CommentManager commentManager)
+        public CommentApi( UnitOfWork unitOfWork)
         {
-            this.commentManager = commentManager;
+            this.unitOfWork = unitOfWork;
         }
         [HttpGet]
         public IEnumerable<Comments> Get()
         {
-            return commentManager.GetAll();
+            return this.unitOfWork.CommentManager.GetAll();
         }
         [HttpGet("GetById")]
         public async Task<Comments> GetById(int id)
         {
-            var find = await commentManager.Find(id);
+            var find = await this.unitOfWork.CommentManager.Find(id);
             if (find != null)
             {
                 return find;
@@ -38,7 +38,7 @@ namespace StackOverFlowApi.Controllers
         [HttpGet("GetResponsesByUserId")]
         public IEnumerable<Responces> GetResponsesByUserId(string userId)
         {
-            return commentManager.getResponces(userId);
+            return this.unitOfWork.CommentManager.getResponces(userId);
         }
         [HttpPost]
         public string Add(string body, string userId, int questionId)
@@ -52,7 +52,7 @@ namespace StackOverFlowApi.Controllers
                 Upvoted = 0,
                 Flag = Enums.Flag.comment
             };
-            var add = commentManager.Insert(comment);
+            var add = this.unitOfWork.CommentManager.Insert(comment);
             if (add == 200)
             {
                 return "Added Successfuly";
@@ -72,7 +72,7 @@ namespace StackOverFlowApi.Controllers
                 Body = body,
                 Flag = (int)Enums.Flag.comment == flag ? Enums.Flag.comment : Enums.Flag.answer
             };
-            var update = await commentManager.Update(comment);
+            var update = await this.unitOfWork.CommentManager.Update(comment);
             if (update != null)
             {
                 return update;
@@ -83,7 +83,7 @@ namespace StackOverFlowApi.Controllers
         [HttpDelete]
         public async Task<string> Delete(int id)
         {
-            var comment = await commentManager.Delete(id);
+            var comment = await this.unitOfWork.CommentManager.Delete(id);
             if (comment)
             {
                 return "Successfuly";
@@ -97,7 +97,7 @@ namespace StackOverFlowApi.Controllers
         [HttpGet("GetQuestionAnswer")]
         public async Task<IEnumerable<Answers>> GetQuestionAnswer(int questionId)
         {
-            var answer = await commentManager.getAnswer(questionId);
+            var answer = await this.unitOfWork.CommentManager.getAnswer(questionId);
             if(answer != null)
             {
                 return answer;

@@ -17,23 +17,23 @@ namespace StackOverFlowApi.Controllers.Apis
     [Route("questions")]
     public class QuestionsApi : ControllerBase
     {
-        private readonly QuestionManager questionManager;
         private readonly UserManager<User> userManager;
-        public QuestionsApi(QuestionManager questionManager, UserManager<User> userManager )
-        {
-            this.questionManager = questionManager;
-            this.userManager = userManager;
+        private readonly UnitOfWork unitOfWork;
 
+        public QuestionsApi(UserManager<User> userManager, UnitOfWork unitOfWork )
+        {
+            this.userManager = userManager;
+            this.unitOfWork = unitOfWork;
         }
         [HttpGet]
         public IEnumerable<Question> getAll()
         {
-            return questionManager.GetAll();
+            return this.unitOfWork.QuestionManager.GetAll();
         } 
         [HttpGet("GetById")]
         public async Task<Question> GetQuestion(int id)
         {
-            var find = await questionManager.Find(id);
+            var find = await this.unitOfWork.QuestionManager.Find(id);
             if(find != null)
             {
                 return find; 
@@ -43,7 +43,7 @@ namespace StackOverFlowApi.Controllers.Apis
         [HttpGet("GetQuestionByUserId")]
         public async Task<IEnumerable< Question>> GetQuestionByUserId(string userId)
         {
-            var questions = await questionManager.getByUserId(userId);
+            var questions = await this.unitOfWork.QuestionManager.getByUserId(userId);
             if(questions != null)
             {
                 return questions;
@@ -54,12 +54,12 @@ namespace StackOverFlowApi.Controllers.Apis
         [HttpGet("GetHomeQuestions")]
         public IEnumerable<HomeQuestions> GetHomeQuestions()
         {
-            return this.questionManager.GetHomeQuestions();
+            return this.unitOfWork.QuestionManager.GetHomeQuestions();
         }
         [HttpPost]
         public async Task<string> addQuestion(string userName, string questionTitle, string questionBody )
         {
-            var check =  questionManager.checkUserIsExist(userName);
+            var check = this.unitOfWork.QuestionManager.checkUserIsExist(userName);
             if (check)
             {
                 var user = await userManager.FindByNameAsync(userName);
@@ -75,7 +75,7 @@ namespace StackOverFlowApi.Controllers.Apis
                     Views = 0,
                     Status = Enums.status.valid
                 };
-                var status = this.questionManager.Insert(question);
+                var status = this.unitOfWork.QuestionManager.Insert(question);
                 if (status == 200)
                 {
                     return "Success";
@@ -87,7 +87,7 @@ namespace StackOverFlowApi.Controllers.Apis
         [HttpPut] 
         public async Task<Question> update(int id, string questionBody, string questionTitle)
         {
-            var find = await questionManager.Find(id);
+            var find = await this.unitOfWork.QuestionManager.Find(id);
             if (find != null)
             {
                 var question = new Question
@@ -96,7 +96,7 @@ namespace StackOverFlowApi.Controllers.Apis
                     Body  = questionBody, 
                     Title = questionTitle
                 };
-                var updated = questionManager.Update(question);
+                var updated = this.unitOfWork.QuestionManager.Update(question);
                 if (updated != null)
                 {
                     return await updated;
@@ -107,7 +107,7 @@ namespace StackOverFlowApi.Controllers.Apis
         [HttpDelete]
         public async Task<string> delete(int id)
         {
-            var deleted = await questionManager.Delete(id);
+            var deleted = await this.unitOfWork.QuestionManager.Delete(id);
             if (deleted)
             {
                 return "Successed";
@@ -121,12 +121,12 @@ namespace StackOverFlowApi.Controllers.Apis
         [HttpGet("OrderByViews")]
         public IEnumerable<Question> OrderByViews()
         {
-            return questionManager.OrderBy(a => a.Views, "ASC"); 
+            return this.unitOfWork.QuestionManager.OrderBy(a => a.Views, "ASC"); 
         }
         [HttpGet("GetQuestionsByTagsAndOrderedViews")]
         public IEnumerable<QuestionTagView> GetQuestionsByTagsAndOrderedViews(int tagId)
         {
-            return questionManager.GeQuestionsByTagIdOrdered(tagId);
+            return this.unitOfWork.QuestionManager.GeQuestionsByTagIdOrdered(tagId);
         }
 
     }

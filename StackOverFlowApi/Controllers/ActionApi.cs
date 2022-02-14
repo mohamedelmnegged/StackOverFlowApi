@@ -16,23 +16,24 @@ namespace StackOverFlowApi.Controllers.Apis
     [Route("actions")]
     public class ActionApi : ControllerBase
     {
-        private readonly ActionManager actionManager;
         private readonly UserManager<User> userManager;
-        
-        public ActionApi(ActionManager actionManager, UserManager<User> userManager)
+        private readonly UnitOfWork unitOfWork;
+
+        public ActionApi( UserManager<User> userManager, UnitOfWork unitOfWork)
         {
-            this.actionManager = actionManager;
             this.userManager = userManager;
+            this.unitOfWork = unitOfWork;
         }
         [HttpGet("GetAll")]
         public IEnumerable<Actions> GetAll()
         {
-            return this.actionManager.GetAll();
+            return this.unitOfWork.ActionManager.GetAll();
+            //return this.actionManager.GetAll();
         }
         [HttpGet("GetById")]
         public async Task<Actions> GetDone(int id)
         {
-            var find = await actionManager.Find(id);
+            var find = await this.unitOfWork.ActionManager.Find(id);
             if(find != null)
             {
                 return find; 
@@ -43,7 +44,7 @@ namespace StackOverFlowApi.Controllers.Apis
         [HttpPost]
         public async Task<string> add(string userName, string actionName, string desc, string url)
         {
-            var check = actionManager.checkUserIsExist(userName);
+            var check = this.unitOfWork.ActionManager.checkUserIsExist(userName);
             User user; 
             if (check)
             {
@@ -62,7 +63,7 @@ namespace StackOverFlowApi.Controllers.Apis
                 Status = Enums.status.valid,
                 UserId = user.Id
             };
-            var add = this.actionManager.Insert(action);
+            var add = this.unitOfWork.ActionManager.Insert(action);
             if (add == 200)
             {
                 return "Successed";
@@ -77,7 +78,7 @@ namespace StackOverFlowApi.Controllers.Apis
         [HttpPut]
         public async Task<Actions> update(int id, string desc, int status, string name)
         {
-            var find = await actionManager.Find(id);
+            var find = await this.unitOfWork.ActionManager.Find(id);
             if(find != null)
             {
                 var action = new Actions
@@ -88,7 +89,7 @@ namespace StackOverFlowApi.Controllers.Apis
                     Status = (int)Enums.status.pending == status ? Enums.status.pending : Enums.status.valid,
                     Name = name
                 };
-                var updated =  actionManager.Update(action);
+                var updated =  this.unitOfWork.ActionManager.Update(action);
                 if(updated != null)
                 {
                     return await updated;
@@ -99,7 +100,7 @@ namespace StackOverFlowApi.Controllers.Apis
 
         [HttpDelete]
         public async Task<string> delete(int id) {
-            var deleted = await actionManager.Delete(id);
+            var deleted = await this.unitOfWork.ActionManager.Delete(id);
             if (deleted)
             {
                 return "Successed";

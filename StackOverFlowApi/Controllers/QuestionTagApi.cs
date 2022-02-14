@@ -12,27 +12,27 @@ namespace StackOverFlowApi.Controllers
     [Route("QuestionTags")]
     public class QuestionTagApi : Controller
     {
-        private readonly QuestionTagManager questtionTagManager;
+        private readonly UnitOfWork unitOfWork;
 
-        public QuestionTagApi(QuestionTagManager questtionTagManager)
+        public QuestionTagApi( UnitOfWork unitOfWork)
         {
-            this.questtionTagManager = questtionTagManager;
+            this.unitOfWork = unitOfWork;
         }
         [HttpGet]
         public IEnumerable<QuestionTag> getAll()
         {
-            return this.questtionTagManager.GetAll(); 
+            return this.unitOfWork.QuestionTagManager.GetAll(); 
         }
         [HttpGet("GetByQuestionIdAndTagId")]
         public async Task<QuestionTag> GetByQuestionIdAndTagId(int tagId, int questionId)
         {
-            return await this.questtionTagManager.Find(questionId, tagId);
+            return await this.unitOfWork.QuestionTagManager.Find(questionId, tagId);
         }
         [HttpPost]
         public async Task<string> Add(int questionId, int tagId)
         {
             var questionTag = new QuestionTag { QuestionId = questionId, TagId = tagId };
-            var insert = this.questtionTagManager.Insert(questionTag);
+            var insert = this.unitOfWork.QuestionTagManager.Insert(questionTag);
             if (insert == 200)
             {
                 return "Success";
@@ -46,10 +46,10 @@ namespace StackOverFlowApi.Controllers
         [HttpDelete]
         public async Task<string> Delete(int tagId, int questionId)
         {
-            var check = await this.questtionTagManager.Find(questionId, tagId); 
+            var check = await this.unitOfWork.QuestionTagManager.Find(questionId, tagId); 
             if(check != null)
             {
-                var delete = await this.questtionTagManager.Delete(questionId, tagId);
+                var delete = await this.unitOfWork.QuestionTagManager.Delete(questionId, tagId);
                 if (delete)
                 {
                     return "Success";

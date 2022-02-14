@@ -15,33 +15,34 @@ namespace StackOverFlowApi.Controllers.Apis
     [Route("tags")]
     public class TagApi : ControllerBase
     {
-        private readonly TagManager tagManager;
         private readonly UserManager<User> userManager;
+        private readonly UnitOfWork unitOfWork;
 
-        public TagApi(TagManager tagManager, UserManager<User> userManager)
+        public TagApi( UserManager<User> userManager, UnitOfWork unitOfWork)
         {
-            this.tagManager = tagManager;
             this.userManager = userManager;
+            this.unitOfWork = unitOfWork;
         }  
         [HttpGet]
         public IEnumerable<Tag> getAll()
         {
-            return this.tagManager.GetAll();
+            return this.unitOfWork.TagManager.GetAll();
+            //return this.tagManager.GetAll();
         } 
         [HttpGet("GetByUserId")]
         public IEnumerable<Tag> GetByUserId(string userId)
         {
-            return tagManager.getByUserId(userId);
+            return this.unitOfWork.TagManager.getByUserId(userId);
         } 
         [HttpGet("GetOrderedByViews")]
         public IEnumerable<Tag> GetOrderedByViews()
         {
-            return tagManager.OrderByViews();
+            return this.unitOfWork.TagManager.OrderByViews();
         }
         [HttpPost]
         public async Task<string> add(string userName, string tagName, string desc)
         {
-            var check = tagManager.checkUserIsExist(userName);
+            var check = this.unitOfWork.TagManager.checkUserIsExist(userName);
             if (check)
             {
                 var user = await userManager.FindByNameAsync(userName);
@@ -51,7 +52,7 @@ namespace StackOverFlowApi.Controllers.Apis
                     Views = 0,
                     UserId = user.Id
                 };
-                var add = tagManager.Insert(tag);
+                var add = this.unitOfWork.TagManager.Insert(tag);
                 if (add == 200)
                 {
                     return "Success";
@@ -62,7 +63,7 @@ namespace StackOverFlowApi.Controllers.Apis
         [HttpPut]
         public async Task<Tag> update(int id, string name, string desc)
         {
-            var find = await tagManager.Find(id);
+            var find = await this.unitOfWork.TagManager.Find(id);
             if (find != null)
             {
                 var tag = new Tag
@@ -71,7 +72,7 @@ namespace StackOverFlowApi.Controllers.Apis
                    Description = desc, 
                    Name = name
                 };
-                var updated = tagManager.Update(tag);
+                var updated = this.unitOfWork.TagManager.Update(tag);
                 if (updated != null)
                 {
                     return await updated;
@@ -83,7 +84,7 @@ namespace StackOverFlowApi.Controllers.Apis
         [HttpDelete]
         public async Task<string> delete(int id)
         {
-            var deleted = await tagManager.Delete(id);
+            var deleted = await this.unitOfWork.TagManager.Delete(id);
             if (deleted)
             {
                 return "Successed";

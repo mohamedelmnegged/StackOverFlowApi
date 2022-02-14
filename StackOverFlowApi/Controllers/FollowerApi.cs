@@ -15,23 +15,21 @@ namespace StackOverFlowApi.Controllers.Apis
     [Route("followers")]
     public class FollowerApi : ControllerBase
     {
-        private readonly FollowerManager followerManager;
-        private readonly UserManager<User> userManager;
+        private readonly UnitOfWork unitOfWork;
 
-        public FollowerApi(FollowerManager followerManager, UserManager<User> userManager)
+        public FollowerApi( UnitOfWork unitOfWork)
         {
-            this.followerManager = followerManager;
-            this.userManager = userManager;
+            this.unitOfWork = unitOfWork;
         }
         [HttpGet]
         public IEnumerable<Followers> getAll()
         {
-            return this.followerManager.GetAll();
+            return this.unitOfWork.FollowerManager.GetAll();
         } 
         [HttpGet("GetFollowersByUserId")]
         public IEnumerable<Followers> get(string id)
         {
-            var find = followerManager.FindFollowers(id);
+            var find = this.unitOfWork.FollowerManager.FindFollowers(id);
             if(find != null)
             {
                 return find;
@@ -41,13 +39,13 @@ namespace StackOverFlowApi.Controllers.Apis
         [HttpGet("GetFollowingByUserId")]
         public IEnumerable<Following> GetFollowing(string userid)
         {
-            return followerManager.GetFollowing(userid);
+            return this.unitOfWork.FollowerManager.GetFollowing(userid);
         }
         [HttpPost]
         public async Task<string> add(string userId, string followerId)
         {
-            var checkUser = followerManager.checkUserIsExist(userId);
-            var checkFollower = followerManager.checkUserIsExist(followerId);
+            var checkUser = this.unitOfWork.FollowerManager.checkUserIsExist(userId);
+            var checkFollower = this.unitOfWork.FollowerManager.checkUserIsExist(followerId);
             if (checkUser && checkFollower)
             {
                
@@ -56,7 +54,7 @@ namespace StackOverFlowApi.Controllers.Apis
                     UserId = userId,
                     FollowingId = followerId,
                 };
-                var add = this.followerManager.Insert(follow);
+                var add = this.unitOfWork.FollowerManager.Insert(follow);
                 if (add == 200)
                 {
                     return "Successed";
@@ -67,12 +65,12 @@ namespace StackOverFlowApi.Controllers.Apis
         [HttpPut]
         public async Task<Followers> update(string userId, string followerId) 
         {
-            var findUser =  followerManager.checkUserIsExist(userId);
-            var findFollower =  followerManager.checkUserIsExist(followerId);
+            var findUser = this.unitOfWork.FollowerManager.checkUserIsExist(userId);
+            var findFollower = this.unitOfWork.FollowerManager.checkUserIsExist(followerId);
             if (findUser && findFollower)
             {
                 var follow = new Followers { UserId = userId, FollowingId = followerId };
-                var updated = followerManager.Update(follow); 
+                var updated = this.unitOfWork.FollowerManager.Update(follow); 
                 if(updated != null)
                 {
                     return await updated; 
@@ -84,11 +82,11 @@ namespace StackOverFlowApi.Controllers.Apis
         [HttpDelete]
         public async Task<string> delete(string userId, string followerId)
         {
-            var findUser = followerManager.checkUserIsExist(userId);
-            var findFollower = followerManager.checkUserIsExist(followerId);
+            var findUser = this.unitOfWork.FollowerManager.checkUserIsExist(userId);
+            var findFollower = this.unitOfWork.FollowerManager.checkUserIsExist(followerId);
             if (findUser && findFollower)
             {
-                var deleted = await followerManager.Delete(userId, followerId);
+                var deleted = await this.unitOfWork.FollowerManager.Delete(userId, followerId);
                 if (deleted)
                 {
                     return "Succssed";

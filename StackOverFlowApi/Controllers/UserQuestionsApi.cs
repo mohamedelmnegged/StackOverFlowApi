@@ -14,26 +14,25 @@ namespace StackOverFlowApi.Controllers.Apis
     [Route("userQuestions")]
     public class UserQuestionsApi : ControllerBase
     {
-        private readonly UserQuestionsManager manager;
         private readonly UserManager<User> userManager;
-        private readonly QuestionManager questionManager;
+        private readonly UnitOfWork unitOfWork;
 
-        public UserQuestionsApi(UserQuestionsManager manager, UserManager<User> userManager, QuestionManager questionManager)
+        public UserQuestionsApi( UserManager<User> userManager, UnitOfWork unitOfWork)
         {
-            this.manager = manager;
             this.userManager = userManager;
-            this.questionManager = questionManager;
+            this.unitOfWork = unitOfWork;
         }
         [HttpGet]
         public IEnumerable<UserQuestion> getAll()
         {
-            return manager.GetAll(); 
+           return this.unitOfWork.UserQuestionsManager.GetAll();
+            //return manager.GetAll(); 
         } 
         [HttpPost]
         public async Task<string> add(string userName, int questionId)
         {
-            var checkUser = manager.checkUserIsExist(userName);
-            var checkQuestion = await questionManager.Find(questionId);
+            var checkUser = this.unitOfWork.UserQuestionsManager.checkUserIsExist(userName);
+            var checkQuestion = await this.unitOfWork.QuestionManager.Find(questionId);
             if (checkUser && checkQuestion != null) {
                 var user = await userManager.FindByNameAsync(userName);
                 var userQuestion = new UserQuestion
@@ -42,7 +41,7 @@ namespace StackOverFlowApi.Controllers.Apis
                     QuestionId = questionId, 
                     Type = 0
                 };
-                var add = manager.Insert(userQuestion);
+                var add = this.unitOfWork.UserQuestionsManager.Insert(userQuestion);
                 if (add == 200)
                 {
                     return "Successed";
@@ -54,7 +53,7 @@ namespace StackOverFlowApi.Controllers.Apis
         [HttpPut]
         public async Task<UserQuestion> update(string userId, int questionId, byte type)
         {
-            var find = await manager.Find(userId, questionId);
+            var find = await this.unitOfWork.UserQuestionsManager.Find(userId, questionId);
             if (find != null)
             {
                 var userQuestion = new UserQuestion
@@ -63,7 +62,7 @@ namespace StackOverFlowApi.Controllers.Apis
                     QuestionId = questionId, 
                     Type = type
                 };
-                var updated = manager.Update(userQuestion);
+                var updated = this.unitOfWork.UserQuestionsManager.Update(userQuestion);
                 if (updated != null)
                 {
                     return await updated;
@@ -75,7 +74,7 @@ namespace StackOverFlowApi.Controllers.Apis
         [HttpDelete]
         public async Task<string> delete(string userId, int questionId)
         {
-            var deleted = await manager.Delete(userId, questionId);
+            var deleted = await this.unitOfWork.UserQuestionsManager.Delete(userId, questionId);
             if (deleted)
             {
                 return "Successed";

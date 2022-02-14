@@ -44,13 +44,7 @@ namespace StackOverFlowApiApi
             //injection 
             services.AddIdentityCore<User>().AddEntityFrameworkStores<ApplicationDBContext>();
 
-            services.AddScoped<QuestionManager>();
-            services.AddScoped<CommentManager>();
-            services.AddScoped<UserQuestionsManager>();
-            services.AddScoped<ActionManager>();
-            services.AddScoped<TagManager>();
-            services.AddScoped<FollowerManager>();
-           services.AddScoped<QuestionTagManager>();
+           services.AddScoped<UnitOfWork>();
 
             //configuration for identity
             services.Configure<IdentityOptions>(options =>

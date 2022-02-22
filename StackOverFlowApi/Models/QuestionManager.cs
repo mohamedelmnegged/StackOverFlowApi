@@ -55,6 +55,7 @@ namespace StackOverFlowApi.Models
                 .Include(a => a.User)
                 .Include(s => s.UserQuestions)
                 .Include(a => a.questionsTags)
+                .Include(a => a.Answered)
                // .Include(a => a.t)
                 .Where(i => i.Id > 0);
         }
@@ -172,23 +173,32 @@ namespace StackOverFlowApi.Models
                  .Select(
                  s => new HomeQuestions
                  {
-                     QuestionBody = s.Body, 
+                     QuestionBody = s.Body,
                      QuestionDownvoted = s.Downvoted,
                      QuestionId = s.Id,
                      QuestionTitle = s.Title,
                      QuestionUpvoted = s.Upvoted,
                      QuestionViews = s.Views,
+                     Answered = s.Answered,
                      tags = s.questionsTags.Join(
                          this.context.Tags,
                          questionTag => questionTag.TagId,
                          tag => tag.Id,
-                         (questionTag, tag) => new TagView {
+                         (questionTag, tag) => new TagView
+                         {
                              TagId = tag.Id,
                              TagName = tag.Name,
                          }
                      )
-                 }).OrderByDescending(a => a.QuestionViews); 
-
+                 });
+        }
+        public IEnumerable<HomeQuestions> NewestHomeQuestion()
+        {
+            return GetHomeQuestions().OrderByDescending(a => a.QuestionId);
+        }
+        public IEnumerable<HomeQuestions> ViewsHomeQuestion()
+        {
+            return GetHomeQuestions().OrderByDescending(a => a.QuestionViews);
         }
     }
 }

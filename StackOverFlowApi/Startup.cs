@@ -7,11 +7,13 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Identity.Web;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using StackOverFlowApi.Data;
 using StackOverFlowApi.Data.Tables;
 using StackOverFlowApi.Models;
 using System.Linq;
+using System.Text;
 
 namespace StackOverFlowApiApi
 {
@@ -28,7 +30,20 @@ namespace StackOverFlowApiApi
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-                .AddMicrosoftIdentityWebApi(Configuration.GetSection("AzureAd"));
+               // .AddMicrosoftIdentityWebApi(Configuration.GetSection("AzureAd"))
+                .AddJwtBearer(options =>
+                {
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuer = true,
+                        ValidateAudience = true,
+                        ValidateLifetime = true,
+                        ValidateIssuerSigningKey = true,
+                        ValidIssuer = Configuration["Jwt:Issuer"],
+                        ValidAudience = Configuration["Jwt:Issuer"],
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Jwt:Key"]))
+                    };
+                }); ;
 
             services.AddControllers();
             services.AddSwaggerGen(c =>
@@ -42,8 +57,10 @@ namespace StackOverFlowApiApi
                 options.UseSqlServer(Configuration.GetConnectionString("myconnection")));
 
             //injection 
-            services.AddIdentityCore<User>().AddEntityFrameworkStores<ApplicationDBContext>();
-
+            services.AddIdentity<User, IdentityRole>()
+                .AddEntityFrameworkStores<ApplicationDBContext>()
+                .AddDefaultTokenProviders();
+            //services.AddScoped<SignInManager<User>>();
            services.AddScoped<UnitOfWork>();
 
             //configuration for identity

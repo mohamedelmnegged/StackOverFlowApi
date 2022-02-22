@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using StackOverFlowApi.Data.Tables;
 using System;
@@ -10,6 +11,7 @@ namespace StackOverFlowApi.Controllers.Apis
 {
     [ApiController]
     [Route("users")]
+    [Authorize]
     public class UsersApi : ControllerBase
     {
         private readonly UserManager<User> usermanager;

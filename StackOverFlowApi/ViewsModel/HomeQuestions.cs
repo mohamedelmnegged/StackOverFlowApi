@@ -14,6 +14,7 @@ namespace StackOverFlowApi.ViewsModel
         public int QuestionDownvoted { get; set; }
         public int QuestionUpvoted { get; set; }
         public int QuestionViews { get; set; }
+        public bool Answered { get; set; }
         public IEnumerable<TagView> tags { get; set; }
         //public int TagId { get; set; }
         //public string TagName { get; set; }

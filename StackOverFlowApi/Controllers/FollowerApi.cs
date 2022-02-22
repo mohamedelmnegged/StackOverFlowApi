@@ -7,12 +7,14 @@ using System.Threading.Tasks;
 using StackOverFlowApi.Data.Tables;
 using Microsoft.AspNetCore.Identity;
 using StackOverFlowApi.ViewsModel;
+using Microsoft.AspNetCore.Authorization;
 
 namespace StackOverFlowApi.Controllers.Apis
 {
 
     [ApiController]
     [Route("followers")]
+    [Authorize]
     public class FollowerApi : ControllerBase
     {
         private readonly UnitOfWork unitOfWork;

@@ -9,11 +9,13 @@ using StackOverFlowApi.Data.Tables;
 using Microsoft.AspNetCore.Identity;
 using StackOverFlowApi.Data;
 using Swashbuckle.AspNetCore.Annotations;
+using Microsoft.AspNetCore.Authorization;
 
 namespace StackOverFlowApi.Controllers.Apis
 {
     [ApiController]
     [Route("actions")]
+    [Authorize]
     public class ActionApi : ControllerBase
     {
         private readonly UserManager<User> userManager;

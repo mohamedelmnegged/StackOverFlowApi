@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using StackOverFlowApi.Data.Tables;
 using StackOverFlowApi.Models;
@@ -13,6 +14,7 @@ namespace StackOverFlowApi.Controllers.Apis
 
     [ApiController]
     [Route("tags")]
+    [Authorize]
     public class TagApi : ControllerBase
     {
         private readonly UserManager<User> userManager;

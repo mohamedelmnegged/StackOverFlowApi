@@ -55,7 +55,17 @@ namespace StackOverFlowApi.Controllers.Apis
         public IEnumerable<HomeQuestions> GetHomeQuestions()
         {
             return this.unitOfWork.QuestionManager.GetHomeQuestions();
-        }
+        } 
+        //[HttpGet("GetNewestHomeQuestions")]
+        //public IEnumerable<HomeQuestions> GetNewestHomeQuestions()
+        //{
+        //    return this.unitOfWork.QuestionManager.NewestHomeQuestion();
+        //}
+        //[HttpGet("GetViewsHomeQuestions")]
+        //public IEnumerable<HomeQuestions> GetViewstHomeQuestions()
+        //{
+        //    return this.unitOfWork.QuestionManager.ViewsHomeQuestion();
+        //}
         [HttpPost]
         public async Task<string> addQuestion(string userName, string questionTitle, string questionBody )
         {

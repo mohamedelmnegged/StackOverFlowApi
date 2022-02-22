@@ -10,7 +10,7 @@ using StackOverFlowApi.Data.Tables;
 
 namespace StackOverFlowApi.Data
 {
-    public class ApplicationDBContext : IdentityDbContext
+    public class ApplicationDBContext : IdentityDbContext<User, IdentityRole, string>
     {
         public ApplicationDBContext(DbContextOptions<ApplicationDBContext> options): base(options)
         { 

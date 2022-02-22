@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Cors;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using StackOverFlowApi.Data.Tables;
 using StackOverFlowApi.Models;
@@ -12,6 +13,7 @@ namespace StackOverFlowApi.Controllers
 {
     [ApiController]
     [Route("Comments")]
+    [Authorize]
     public class CommentApi : Controller
     {
         private readonly UnitOfWork unitOfWork;

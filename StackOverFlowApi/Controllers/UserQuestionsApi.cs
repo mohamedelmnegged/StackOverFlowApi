@@ -6,12 +6,14 @@ using System.Linq;
 using System.Threading.Tasks;
 using StackOverFlowApi.Data.Tables;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authorization;
 
 namespace StackOverFlowApi.Controllers.Apis
 {
 
     [ApiController]
     [Route("userQuestions")]
+    [Authorize]
     public class UserQuestionsApi : ControllerBase
     {
         private readonly UserManager<User> userManager;

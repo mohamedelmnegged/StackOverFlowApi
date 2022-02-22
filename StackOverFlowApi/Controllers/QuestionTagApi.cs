@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using StackOverFlowApi.Data.Tables;
 using StackOverFlowApi.Models;
 using System;
@@ -10,6 +11,7 @@ namespace StackOverFlowApi.Controllers
 { 
     [ApiController]
     [Route("QuestionTags")]
+    [Authorize]
     public class QuestionTagApi : Controller
     {
         private readonly UnitOfWork unitOfWork;

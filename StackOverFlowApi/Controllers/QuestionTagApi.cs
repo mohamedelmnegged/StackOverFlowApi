@@ -11,7 +11,7 @@ namespace StackOverFlowApi.Controllers
 { 
     [ApiController]
     [Route("QuestionTags")]
-    [Authorize]
+    [Authorize(AuthenticationSchemes = "Bearer")]
     public class QuestionTagApi : Controller
     {
         private readonly UnitOfWork unitOfWork;

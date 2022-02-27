@@ -13,7 +13,7 @@ namespace StackOverFlowApi.Controllers
 {
     [ApiController]
     [Route("Comments")]
-    [Authorize]
+    [Authorize(AuthenticationSchemes = "Bearer")]
     public class CommentApi : Controller
     {
         private readonly UnitOfWork unitOfWork;

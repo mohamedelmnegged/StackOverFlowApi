@@ -14,7 +14,7 @@ namespace StackOverFlowApi.Controllers.Apis
 
     [ApiController]
     [Route("tags")]
-    [Authorize]
+    [Authorize(AuthenticationSchemes = "Bearer")]
     public class TagApi : ControllerBase
     {
         private readonly UserManager<User> userManager;

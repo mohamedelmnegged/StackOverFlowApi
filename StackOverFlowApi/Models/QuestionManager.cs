@@ -55,7 +55,6 @@ namespace StackOverFlowApi.Models
                 .Include(a => a.User)
                 .Include(s => s.UserQuestions)
                 .Include(a => a.questionsTags)
-                .Include(a => a.Answered)
                // .Include(a => a.t)
                 .Where(i => i.Id > 0);
         }

@@ -13,7 +13,7 @@ namespace StackOverFlowApi.Controllers.Apis
 
     [ApiController]
     [Route("userQuestions")]
-    [Authorize]
+    [Authorize(AuthenticationSchemes = "Bearer")]
     public class UserQuestionsApi : ControllerBase
     {
         private readonly UserManager<User> userManager;

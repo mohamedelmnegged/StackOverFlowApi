@@ -15,7 +15,7 @@ namespace StackOverFlowApi.Controllers.Apis
 {
     [ApiController]
     [Route("actions")]
-    [Authorize]
+    [Authorize(AuthenticationSchemes = "Bearer")]
     public class ActionApi : ControllerBase
     {
         private readonly UserManager<User> userManager;

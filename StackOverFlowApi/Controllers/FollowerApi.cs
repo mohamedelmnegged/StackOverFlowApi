@@ -14,7 +14,7 @@ namespace StackOverFlowApi.Controllers.Apis
 
     [ApiController]
     [Route("followers")]
-    [Authorize]
+    [Authorize(AuthenticationSchemes = "Bearer")]
     public class FollowerApi : ControllerBase
     {
         private readonly UnitOfWork unitOfWork;

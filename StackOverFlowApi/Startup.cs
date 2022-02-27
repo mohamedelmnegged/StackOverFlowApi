@@ -31,7 +31,7 @@ namespace StackOverFlowApiApi
         {
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                // .AddMicrosoftIdentityWebApi(Configuration.GetSection("AzureAd"))
-                .AddJwtBearer(options =>
+                .AddJwtBearer("Bearer", options =>
                 {
                     options.TokenValidationParameters = new TokenValidationParameters
                     {
@@ -43,6 +43,8 @@ namespace StackOverFlowApiApi
                         ValidAudience = Configuration["Jwt:Issuer"],
                         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Jwt:Key"]))
                     };
+                    //options.RequireHttpsMetadata = false;
+                    //options.Authority = "https://localhost:4200";
                 }); ;
 
             services.AddControllers();

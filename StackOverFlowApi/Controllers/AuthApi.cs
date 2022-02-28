@@ -45,7 +45,7 @@ namespace StackOverFlowApi.Controllers
             return response;
         }
         [HttpPost("Logout")]
-        [Authorize]
+        [Authorize(AuthenticationSchemes ="Bearer")]
         public async Task<IActionResult> Logout()
         {
             await signInManager.SignOutAsync();

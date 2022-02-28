@@ -10,13 +10,14 @@ using System.Linq;
 using System.Threading.Tasks;
 using StackOverFlowApi.ViewsModel;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 namespace StackOverFlowApi.Controllers.Apis
 {
 
     [ApiController]
     [Route("questions")]
-    [Authorize(AuthenticationSchemes = "Bearer")]
+    [Authorize(AuthenticationSchemes =JwtBearerDefaults.AuthenticationScheme)]
     public class QuestionsApi : ControllerBase
     {
         private readonly UserManager<User> userManager;

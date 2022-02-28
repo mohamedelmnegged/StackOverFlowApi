@@ -12,7 +12,11 @@ using Microsoft.OpenApi.Models;
 using StackOverFlowApi.Data;
 using StackOverFlowApi.Data.Tables;
 using StackOverFlowApi.Models;
+using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 
 namespace StackOverFlowApiApi
@@ -31,7 +35,7 @@ namespace StackOverFlowApiApi
         {
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                // .AddMicrosoftIdentityWebApi(Configuration.GetSection("AzureAd"))
-                .AddJwtBearer("Bearer", options =>
+                .AddJwtBearer( options =>
                 {
                     options.TokenValidationParameters = new TokenValidationParameters
                     {
@@ -51,7 +55,27 @@ namespace StackOverFlowApiApi
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "StackOverFlowApiApi", Version = "v1" });
-                c.ResolveConflictingActions(apiDescriptions => apiDescriptions.First());
+                // c.ResolveConflictingActions(apiDescriptions => apiDescriptions.First());
+                c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+                {
+                    In = ParameterLocation.Header,
+                    Description = "Please insert JWT with Bearer into field",
+                    Name = "Authorization",
+                    Type = SecuritySchemeType.ApiKey
+                });
+                c.AddSecurityRequirement(new OpenApiSecurityRequirement {
+                   {
+                     new OpenApiSecurityScheme
+                     {
+                       Reference = new OpenApiReference
+                       {
+                         Type = ReferenceType.SecurityScheme,
+                         Id = "Bearer"
+                       }
+                      },
+                      new string[] { }
+                    }
+                  });
             });
 
 
